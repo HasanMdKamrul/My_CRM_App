@@ -26,6 +26,9 @@
     <h1>Here is detail of our lead: {{lead.first_name}}</h1>
     <p>Age of the lead: {{ lead.age }}</p> 
     <p>Agent assocciated for this lead: {{ lead.agent }}</p>
+    <hr />
+    <a href="/leads/{{ lead.pk }}/update/">update</a>
+    <a href="/leads/{{ lead.pk }}/delete/">Delete</a>
     
 </body>
 </html>
