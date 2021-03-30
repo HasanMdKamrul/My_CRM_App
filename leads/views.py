@@ -1,3 +1,4 @@
+from django.core.mail import send_mail
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
@@ -56,6 +57,15 @@ class LeadCreateView(generic.CreateView):
 
     def get_success_url(self):
         return reverse("leads:lead-list")
+
+    def form_valid(self, form): # Here we overwrite the form_valid()method and add a added functionality which is sending emails. After sending it we return the actuall form_valid()method to be operated.
+        send_mail(
+            subject =  'Lead massage has been created!',
+            message =  'Go to site to see the new lead.',
+            from_email = 'from@example.com',
+            recipient_list = ['to@example.com'],
+        )
+        return super().form_valid(form)
 
 
 
