@@ -1,8 +1,9 @@
 from django.core.mail import send_mail
+from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
-from .models import Lead,Agent
+from .models import Lead,Agent,User
 from .forms import LeadForm,LeadModelForm,CustomUserCreationForm
 
 
@@ -16,9 +17,9 @@ class SignupView(generic.CreateView):
         return reverse("login")
 
 
-
 class LandingPageView(generic.TemplateView):
     template_name = "landing.html"
+    
 
 def landing_page(request):
     return render(request, "landing.html")
@@ -134,5 +135,3 @@ def lead_delete(request,pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
     return redirect("/leads")
-
-

@@ -26,3 +26,6 @@ class CustomUserCreationForm(UserCreationForm):
         model = User
         fields = ("username",)
         field_classes = {'username': UsernameField}
+
+
+        
