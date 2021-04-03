@@ -1,4 +1,5 @@
 from django.core.mail import send_mail
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
@@ -15,8 +16,6 @@ class SignupView(generic.CreateView):
 
     def get_success_url(self):
         return reverse("login")
-
-
 class LandingPageView(generic.TemplateView):
     template_name = "landing.html"
     
@@ -24,7 +23,7 @@ class LandingPageView(generic.TemplateView):
 def landing_page(request):
     return render(request, "landing.html")
 
-class LeadListView(generic.ListView):
+class LeadListView(LoginRequiredMixin,generic.ListView):
     model = Lead
     template_name = "leads/lead_list.html"
     queryset = Lead.objects.all()
@@ -38,15 +37,11 @@ def lead_list(request):
         "leads" : leads
     }
     return render(request, "leads/lead_list.html", context)
-
-class LeadDetailView(generic.DetailView):
+class LeadDetailView(LoginRequiredMixin,generic.DetailView):
     model = Lead
     template_name = "leads/lead_detail.html"
     queryset = Lead.objects.all()
     context_object_name = "lead"
-
-
-
 
 def lead_detail(request, pk):
     lead = Lead.objects.get(id=pk)
@@ -58,8 +53,7 @@ def lead_detail(request, pk):
 
     return render(request, "leads/lead_detail.html", context)
 
-
-class LeadCreateView(generic.CreateView):
+class LeadCreateView(LoginRequiredMixin,generic.CreateView):
     model = Lead
     template_name = "leads/lead_create.html"
     form_class = LeadModelForm
@@ -76,8 +70,6 @@ class LeadCreateView(generic.CreateView):
         )
         return super().form_valid(form)
 
-
-
 def lead_create(request):
     form = LeadModelForm()
     if request.method == "POST":
@@ -92,8 +84,7 @@ def lead_create(request):
     }
     return render(request, "leads/lead_create.html", context)
 
-
-class LeadUpdateView(generic.UpdateView):
+class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
     model = Lead
     template_name = "leads/lead_update.html"
     form_class = LeadModelForm
@@ -101,8 +92,6 @@ class LeadUpdateView(generic.UpdateView):
 
     def get_success_url(self):
         return reverse("leads:lead-list")
-
-
 
 def lead_update(request, pk):
     lead = Lead.objects.get(id=pk)
@@ -118,9 +107,7 @@ def lead_update(request, pk):
     }
     return render(request, "leads/lead_update.html", context)
 
-
-
-class LeadDeleteView(generic.DeleteView):
+class LeadDeleteView(LoginRequiredMixin,generic.DeleteView):
     model = Lead
     template_name = "leads/lead_delete.html"
     qurey_set = Lead.objects.all()
@@ -128,9 +115,6 @@ class LeadDeleteView(generic.DeleteView):
     def get_success_url(self):
         return reverse("leads:lead-list")
     
-
-
-
 def lead_delete(request,pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
