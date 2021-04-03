@@ -21,12 +21,16 @@ class AgentCreateView(LoginRequiredMixin,generic.CreateView):
     template_name = "agents/agent_create.html"
     form_class = AgentModelForm
 
+    # Since in our form-->AgentModelForm we're not passing the organisation so that it required it.
+    #Before validation of the form we need to pass that information to the database model.
+    #So we modify our form_valid method and passed the required organisation
 
     def form_valid(self,form):
-        agent = form.save(commit=False)
-        agent.organisation = self.request.user.userprofile
-        agent.save()
-        return super().form_valid(form)
+        agent = form.save(commit=False) # First we save our form with one field which is user, organisation is null in this point. But we don't commit the change to the database
+        agent.organisation = self.request.user.userprofile # In this point with that existing user filed we pass our required organisation field
+        '''agent is an instance of that form with both the required field now '''
+        agent.save() # We save our form here
+        return super().form_valid(form) # Lastly form validation run 
 
     def get_success_url(self):
         return reverse("agents:agent-list")
