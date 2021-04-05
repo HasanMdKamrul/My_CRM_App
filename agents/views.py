@@ -34,5 +34,38 @@ class AgentCreateView(LoginRequiredMixin,generic.CreateView):
 
     def get_success_url(self):
         return reverse("agents:agent-list")
+    
+    
+class AgentDetailView(LoginRequiredMixin,generic.DetailView):
+    model = Agent
+    template_name = "agents/agent_detail.html"
+    context_object_name = "agent"
+    
+class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
+    model = Agent
+    template_name = "agents/agent_update.html"
+    form_class = AgentModelForm
+    context_object_name = "agent"
+
+    def get_queryset(self):
+        return Agent.objects.all()
+    
+
+    def get_success_url(self):
+        return reverse("agents:agent-list")
+        
+
+
+class AgentDeleteView(LoginRequiredMixin,generic.DeleteView):
+    model = Agent
+    template_name = "agents/agent_delete.html"
+
+    def get_queryset(self):
+        return Agent.objects.all()
+    
+    def get_success_url(self):
+        return reverse('agents:agent-list')
+    
+
 
 
