@@ -5,14 +5,14 @@ from leads.models import Agent
 from django.contrib.auth.mixins import LoginRequiredMixin
 from .forms import AgentModelForm
 
-# Create your views here.
 
 
 class AgentsListView(LoginRequiredMixin,generic.ListView):
     template_name = "agents/agent_list.html"
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile # Taking the organisation who created the agents
+        return Agent.objects.filter(organisation=organisation) #filtering agent model and look all the agents that created by that organisation userprofile
     
 
 
@@ -40,6 +40,10 @@ class AgentDetailView(LoginRequiredMixin,generic.DetailView):
     model = Agent
     template_name = "agents/agent_detail.html"
     context_object_name = "agent"
+
+    def get_queryset(self):
+        organisation = self.request.user.userprofile # Taking the organisation who created the agents
+        return Agent.objects.filter(organisation=organisation)
     
 class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
     model = Agent
@@ -48,7 +52,8 @@ class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
     context_object_name = "agent"
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile # Taking the organisation who created the agents
+        return Agent.objects.filter(organisation=organisation)
     
 
     def get_success_url(self):
@@ -59,9 +64,11 @@ class AgentUpdateView(LoginRequiredMixin,generic.UpdateView):
 class AgentDeleteView(LoginRequiredMixin,generic.DeleteView):
     model = Agent
     template_name = "agents/agent_delete.html"
+    context_object_name = "agent"
 
     def get_queryset(self):
-        return Agent.objects.all()
+        organisation = self.request.user.userprofile # Taking the organisation who created the agents
+        return Agent.objects.filter(organisation=organisation)
     
     def get_success_url(self):
         return reverse('agents:agent-list')
