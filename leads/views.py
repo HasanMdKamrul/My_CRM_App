@@ -6,6 +6,7 @@ from django.http import HttpResponse
 from django.views import generic 
 from .models import Lead,Agent,User
 from .forms import LeadForm,LeadModelForm,CustomUserCreationForm
+from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
 # CRUD+L - Create, Retrive(Detail), Update and Delete + list
@@ -53,7 +54,7 @@ def lead_detail(request, pk):
 
     return render(request, "leads/lead_detail.html", context)
 
-class LeadCreateView(LoginRequiredMixin,generic.CreateView):
+class LeadCreateView(OrganisorAndLoginRequiredMixin,generic.CreateView):
     model = Lead
     template_name = "leads/lead_create.html"
     form_class = LeadModelForm
@@ -84,7 +85,7 @@ def lead_create(request):
     }
     return render(request, "leads/lead_create.html", context)
 
-class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
+class LeadUpdateView(OrganisorAndLoginRequiredMixin,generic.UpdateView):
     model = Lead
     template_name = "leads/lead_update.html"
     form_class = LeadModelForm
@@ -107,7 +108,7 @@ def lead_update(request, pk):
     }
     return render(request, "leads/lead_update.html", context)
 
-class LeadDeleteView(LoginRequiredMixin,generic.DeleteView):
+class LeadDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
     model = Lead
     template_name = "leads/lead_delete.html"
     qurey_set = Lead.objects.all()
