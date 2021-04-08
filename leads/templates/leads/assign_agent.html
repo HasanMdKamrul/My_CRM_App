@@ -5,7 +5,7 @@
     
     <a href="{% url 'leads:lead-list'%}"> Go back to leads </a>
     <hr />
-    <H1>Create a new lead:</H1>
+    <H1>Assign this lead to an agent</H1>
     <form method="post">
         {% csrf_token %}
         {{ form.as_p}}

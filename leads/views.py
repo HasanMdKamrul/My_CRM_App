@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
 from .models import Lead,Agent,User
-from .forms import LeadForm,LeadModelForm,CustomUserCreationForm
+from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
@@ -160,3 +160,38 @@ def lead_delete(request,pk):
     lead = Lead.objects.get(id=pk)
     lead.delete()
     return redirect("/leads")
+
+
+
+class AssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
+    template_name = "leads/assign_agent.html"
+    form_class = AssignAgentForm
+
+# First we grabbed the logged in user which is an organispr ofcourse using kwargs with the help of get_form_kwargs methos. 
+# Pass that user to tha form. 
+# Under that user form populated that user's agents.
+# Initialise that form and then on the agent filed we passed that filter agent queryset,
+# which initially setted to none. 
+# After that we grab that submited agent in our form_valid method . 
+#Then grab the coresponding lead with that kwargs pk.
+# Grab that agent in lead's agent field---> lead.agent = agent 
+# Finally save that lead.
+
+
+    def get_form_kwargs(self, **kwargs):
+        kwargs = super(AssignAgentView, self).get_form_kwargs(**kwargs)
+        kwargs.update({
+            "user": self.request.user
+        })
+        return kwargs
+        
+    def get_success_url(self):
+        return reverse("leads:lead-list")
+
+    def form_valid(self, form):
+        agent = form.cleaned_data["agent"]
+        lead = Lead.objects.get(id=self.kwargs["pk"])
+        lead.agent = agent
+        lead.save()
+        return super(AssignAgentView, self).form_valid(form)
+    
