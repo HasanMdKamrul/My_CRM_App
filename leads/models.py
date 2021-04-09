@@ -23,9 +23,6 @@ class Lead(models.Model):
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)
     
-    
-
-
 class Agent(models.Model):
     user = models.OneToOneField("User",  on_delete=models.CASCADE)
     organisation = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
@@ -36,7 +33,8 @@ class Agent(models.Model):
 
 class Catagory(models.Model): 
     name = models.CharField(max_length=30) #New, Contacted, Converted to sell, Unconverted
-
+    organisation = models.ForeignKey("UserProfile",on_delete=models.CASCADE)
+    
     def __str__(self):
 
         return self.name

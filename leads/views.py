@@ -4,7 +4,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
-from .models import Lead,Agent,User
+from .models import Lead,Agent,User,Catagory
 from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
@@ -195,3 +195,36 @@ class AssignAgentView(OrganisorAndLoginRequiredMixin, generic.FormView):
         lead.save()
         return super(AssignAgentView, self).form_valid(form)
     
+
+class CatagoryListView(LoginRequiredMixin,generic.ListView):
+    model = Catagory
+    template_name = "leads/catagory_list.html"
+    context_object_name = "catagory_list"
+
+    def get_context_data(self, **kwargs):
+        context = super(CatagoryListView, self).get_context_data(**kwargs)
+
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Lead.objects.filter(organisation=user.agent.organisation) 
+        
+
+        context.update(
+            {
+                "unassigned_lead_count": queryset.filter(catagory__isnull=True).count()
+            }
+        )
+        return context
+    
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Catagory.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Catagory.objects.filter(organisation=user.agent.organisation) 
+        return queryset
