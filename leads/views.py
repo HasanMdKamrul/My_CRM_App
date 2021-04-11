@@ -247,7 +247,7 @@ class CatagoryDetailView(LoginRequiredMixin,generic.DetailView):
 
 class LeadCatagoryUpdateView(LoginRequiredMixin,generic.UpdateView):
     model = Lead
-    template_name = "leads/lead_catagory_update.html"
+    template_name = "leads/catagory_update.html"
     form_class = LeadCatagoryUpdateForm
 
     def get_queryset(self):
