@@ -18,7 +18,7 @@ class Lead(models.Model):
     age = models.IntegerField(default =0 )
     organisation = models.ForeignKey("UserProfile", on_delete=models.CASCADE)
     agent = models.ForeignKey("Agent", null=True, blank=True, on_delete=models.SET_NULL) #An agent could've multiple leads forignkey. But if a agent got deleted the lead assigned to them set to none and filed of agent goes to blank
-    catagory = models.ForeignKey("Catagory",null=True, blank=True,on_delete=models.SET_NULL)
+    catagory = models.ForeignKey("Catagory",related_name='leads',null=True, blank=True,on_delete=models.SET_NULL)
     
     def __str__(self):
         return "{} {}".format(self.first_name, self.last_name)

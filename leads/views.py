@@ -228,3 +228,18 @@ class CatagoryListView(LoginRequiredMixin,generic.ListView):
         else:
             queryset = Catagory.objects.filter(organisation=user.agent.organisation) 
         return queryset
+
+class CatagoryDetailView(LoginRequiredMixin,generic.DetailView):
+    model = Catagory
+    template_name = "leads/catagory_detail.html"
+    context_object_name = "catagory"
+
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Catagory.objects.filter(organisation=user.userprofile)
+        else:
+            queryset = Catagory.objects.filter(organisation=user.agent.organisation) 
+        return queryset
