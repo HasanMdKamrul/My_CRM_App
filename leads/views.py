@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
 from .models import Lead,Agent,User,Catagory
-from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm
+from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
@@ -243,3 +243,25 @@ class CatagoryDetailView(LoginRequiredMixin,generic.DetailView):
         else:
             queryset = Catagory.objects.filter(organisation=user.agent.organisation) 
         return queryset
+
+
+class LeadCatagoryUpdateView(LoginRequiredMixin,generic.UpdateView):
+    model = Lead
+    template_name = "leads/lead_catagory_update.html"
+    form_class = LeadCatagoryUpdateForm
+
+    def get_queryset(self):
+        user = self.request.user
+
+        #Initial query set for the entire organisation
+        if user.is_organisor:
+            queryset = Lead.objects.filter(organisation=user.userprofile)
+        else:
+            #Getting all the leads associated under the logged in agents organisation
+            queryset = Lead.objects.filter(organisation=user.agent.organisation) #Accesing the organisation first--> an agent lies under which organisation
+            # Filtering the leads for the current agent
+            queryset = Lead.objects.filter(agent__user=user)
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:lead-detail", kwargs={"pk":self.get_object().id})
