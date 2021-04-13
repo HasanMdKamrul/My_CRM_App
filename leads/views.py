@@ -99,6 +99,10 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin,generic.CreateView):
         return reverse("leads:lead-list")
 
     def form_valid(self, form): # Here we overwrite the form_valid()method and add a added functionality which is sending emails. After sending it we return the actuall form_valid()method to be operated.
+        lead = form.save(commit=False)
+        lead.organisation = self.request.user.userprofile
+        lead.save()
+
         send_mail(
             subject =  'Lead massage has been created!',
             message =  'Go to site to see the new lead.',
