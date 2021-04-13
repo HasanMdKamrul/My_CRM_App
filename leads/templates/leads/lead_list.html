@@ -33,7 +33,10 @@
                             {{lead.first_name}} {{lead.last_name}}
                         </h2>
                         <p class="leading-relaxed text-base">
-                            Blue bottle crucifix vinyl post-ironic four dollar toast vegan taxidermy. Gastropub indxgo juice poutine.
+                            {{lead.description}}
+                        </p>
+                        <p class="leading-relaxed text-base">
+                            Catagory : {{lead.catagory}}
                         </p>
                         <a href="{%url 'leads:lead-detail' lead.pk%}" class="mt-3 text-indigo-500 inline-flex items-center">
                             View this lead.
@@ -47,6 +50,7 @@
             {% endfor %}
         </div>
     </div>
+    {% if request.user.is_organisor %}
     <div class="container px-5 py-24 mx-auto flex flex-wrap">
         <div class="w-full mb-6 py-6 flex justify-between items-center border-b border-gray-200">
             <div>
@@ -67,7 +71,10 @@
                             {{lead.first_name}} {{lead.last_name}}
                         </h2>
                         <p class="leading-relaxed text-base">
-                            Descrption: {{lead.description}}
+                            Descrption of this lead: {{lead.description}}
+                        </p>
+                        <p class="leading-relaxed text-base">
+                           Catagory : {{lead.catagory}}  
                         </p>
                         <a href="{%url 'leads:assign-agent' lead.pk%}" class="mt-3 text-indigo-500 inline-flex items-center">
                             Assign this lead to an agent.
@@ -81,6 +88,7 @@
             {% endfor %}
         </div>
     </div>
+    {% endif %}
   </section>
     
 {% endblock content %}
