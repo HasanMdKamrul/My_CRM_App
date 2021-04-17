@@ -5,7 +5,7 @@ from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse
 from django.views import generic 
 from .models import Lead,Agent,User,Catagory
-from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm
+from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm,CatagoryCreateModelForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
@@ -269,3 +269,48 @@ class LeadCatagoryUpdateView(LoginRequiredMixin,generic.UpdateView):
 
     def get_success_url(self):
         return reverse("leads:lead-detail", kwargs={"pk":self.get_object().id})
+
+
+class CatagoryCreateView(OrganisorAndLoginRequiredMixin,generic.CreateView):
+    model = Catagory
+    template_name = "leads/catagory_create.html"
+    form_class = CatagoryCreateModelForm
+
+    def get_success_url(self):
+        return reverse("leads:catagory-list")
+
+    def form_valid(self, form): # Here we overwrite the form_valid()method and add a added functionality which is sending emails. After sending it we return the actuall form_valid()method to be operated.
+        Catagory = form.save(commit=False)
+        Catagory.organisation = self.request.user.userprofile
+        Catagory.save()
+        return super().form_valid(form)
+
+
+
+class CatagoryUpdateView(OrganisorAndLoginRequiredMixin,generic.UpdateView):
+    template_name = "leads/catagory_update.html"
+    context_object_name = "catagory"
+    form_class = CatagoryCreateModelForm
+
+    def get_success_url(self):
+        return reverse("leads:catagory-list")
+
+    def get_queryset(self):
+        user = self.request.user
+
+        if user.is_organisor:
+            queryset = Catagory.objects.filter(organisation=user.userprofile)
+        return queryset
+
+
+class CatagoryDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
+    model = Catagory
+    context_object_name = "catagory"
+    template_name = "leads/catagory_delete.html"
+
+    def get_queryset(self):
+        user = self.request.user
+        return Catagory.objects.filter(organisation=user.userprofile)
+
+    def get_success_url(self):
+        return reverse("leads:catagory-list")

@@ -4,10 +4,17 @@
 
 <section class="text-gray-600 body-font">
     <div class="container px-5 py-24 mx-auto">
+      <a class="hover:text-blue-500" href="{% url 'leads:catagory-list' %}">Go back to catagories</a>
       <div class="flex flex-col text-center w-full mb-20">
         <h1 class="sm:text-4xl text-3xl font-medium title-font mb-2 text-gray-900">{{ catagory }}</h1>
         <p class="lg:w-2/3 mx-auto leading-relaxed text-base">
             Leads under this catagory
+        </p>
+        <p>
+          <a href="{% url 'leads:catagory-update' catagory.pk %}" class="hover:text-blue-500"> Update </a>
+        </p>
+        <p>
+          <a href="{% url 'leads:catagory-delete' catagory.pk %}" class="hover:text-blue-500"> Delete </a>
         </p>
       </div>
       <div class="lg:w-2/3 w-full mx-auto overflow-auto">
