@@ -1,14 +1,17 @@
+import logging
 from django.core.mail import send_mail
+from django.contrib import messages
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render,redirect,reverse
-from django.http import HttpResponse
+from django.http import HttpResponse,JsonResponse
 from django.views import generic 
 from .models import Lead,Agent,User,Catagory
 from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm,CatagoryCreateModelForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
+logger = logging.getLogger(__name__)
 # CRUD+L - Create, Retrive(Detail), Update and Delete + list
 
 class SignupView(generic.CreateView):
@@ -67,6 +70,9 @@ class LeadDetailView(LoginRequiredMixin,generic.DetailView):
     template_name = "leads/lead_detail.html"
     context_object_name = "lead"
 
+    def get_context_data(self, **kwargs):
+        return super().get_context_data(**kwargs)
+
     def get_queryset(self):
         user = self.request.user
 
@@ -109,6 +115,8 @@ class LeadCreateView(OrganisorAndLoginRequiredMixin,generic.CreateView):
             from_email = 'from@example.com',
             recipient_list = ['to@example.com'],
         )
+
+        messages.success(self.request,"You have successfully created a lead!")
         return super().form_valid(form)
 
 def lead_create(request):
@@ -314,3 +322,21 @@ class CatagoryDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
 
     def get_success_url(self):
         return reverse("leads:catagory-list")
+
+# In this section we are going to make a model or database table to json data
+
+
+class JsonLeadList(generic.View):
+
+    def get(self,request,*args,**kwargs):
+
+        qs = Lead.objects.all()
+        qs = list(qs.values("first_name","last_name","age"))
+
+        logging.warning("This is a Json response Warning!")
+
+        return JsonResponse(
+            {
+                "qs":qs,
+            }
+        )

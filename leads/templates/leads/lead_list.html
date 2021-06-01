@@ -30,7 +30,9 @@
                     </div>
                     <div class="flex-grow">
                         <h2 class="text-gray-900 text-lg title-font font-medium mb-3">
-                            {{lead.first_name}} {{lead.last_name}}
+                            <a class="text-blue-500 hover-text-800" href="{% url 'leads:lead-detail' lead.pk%}">{{lead.first_name}} 
+                                {{lead.last_name}}</a>
+                            
                         </h2>
                         <p class="leading-relaxed text-base">
                             {{lead.description}}
@@ -70,7 +72,10 @@
                     </div>
                     <div class="flex-grow">
                         <h2 class="text-gray-900 text-lg title-font font-medium mb-3">
-                            {{lead.first_name}} {{lead.last_name}}
+                            <a class="text-blue-500 hover-text-800" href="{% url 'leads:lead-detail' lead.pk %}">
+                                {{lead.first_name}} {{lead.last_name}}
+                            </a>
+                            
                         </h2>
                         <p class="leading-relaxed text-base">
                             Descrption of this lead: {{lead.description}}

@@ -15,9 +15,8 @@ class LeadModelForm(forms.ModelForm):
                  "description",
                  "phone_number",
                  "email",
+                 "profile_picture",
                  )
-
-
 
 class LeadForm(forms.Form):
 
