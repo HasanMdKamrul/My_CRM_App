@@ -6,8 +6,8 @@ from django.contrib.auth.forms import UserCreationForm
 from django.shortcuts import render,redirect,reverse
 from django.http import HttpResponse,JsonResponse
 from django.views import generic 
-from .models import Lead,Agent,User,Catagory
-from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm,CatagoryCreateModelForm
+from .models import Lead,Agent,User,Catagory,LeadFollowUps
+from .forms import LeadForm,LeadModelForm,CustomUserCreationForm,AssignAgentForm,LeadCatagoryUpdateForm,CatagoryCreateModelForm,FollowUpCreateModelForm
 from agents.mixins import OrganisorAndLoginRequiredMixin
 
 
@@ -340,3 +340,28 @@ class JsonLeadList(generic.View):
                 "qs":qs,
             }
         )
+    
+class FollowUpCreateView(LoginRequiredMixin,generic.CreateView):
+    model = LeadFollowUps
+    template_name = "leads/followup_create.html"
+    form_class = FollowUpCreateModelForm 
+
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context.update(
+            {
+                "lead":Lead.objects.get(pk=self.kwargs["pk"])
+            }
+        ) 
+        return context
+    
+
+    def get_success_url(self):
+        return reverse("leads:lead-detail" , kwargs={"pk": self.kwargs["pk"]})
+
+    def form_valid(self, form): # Here we overwrite the form_valid()method and add a added functionality which is sending emails. After sending it we return the actuall form_valid()method to be operated.
+        lead = Lead.objects.get(pk=self.kwargs["pk"])
+        followup = form.save(commit=False)
+        followup.lead = lead
+        followup.save()
+        return super().form_valid(form)
