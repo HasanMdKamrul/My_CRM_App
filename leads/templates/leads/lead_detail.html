@@ -41,22 +41,22 @@
         <a class="text-white bg-blue-500 hover:bg-blue-600 px-3 py-2 rounded-md" href="{% url  'leads:lead-followup-create' lead.pk %}"> Add a followup </a>
       </div>
       <div>
-        
-        {% if followups in object_list %}
+        <div>
+          {% for followups in queryset  %}
 
-          {{ followups.notes}}
+            {{ followups.notes }}
 
-          
-          {% if followups.files %}
-
-            <img src="{ folllowups.files.url }" alt="">
             
-          {% endif %}
+            {% if followups.files %}
+
+                <img src="{{ followups.files.url }}" >
+              
+            {% endif %}
+              
             
-          
-        {% endif %}
-          
-      </div>
+          {% endfor %}
+        </div>
+    </div>
 
     </div>
   </section> 

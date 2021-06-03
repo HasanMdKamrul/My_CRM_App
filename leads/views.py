@@ -71,7 +71,14 @@ class LeadDetailView(LoginRequiredMixin,generic.DetailView):
     context_object_name = "lead"
 
     def get_context_data(self, **kwargs):
-        return super().get_context_data(**kwargs)
+        context = super().get_context_data(**kwargs)
+        queryset = LeadFollowUps.objects.all()
+        context.update(
+            {
+                "queryset":queryset
+            }
+        )
+        return context
 
     def get_queryset(self):
         user = self.request.user
