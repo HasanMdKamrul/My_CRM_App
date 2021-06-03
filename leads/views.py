@@ -372,3 +372,25 @@ class FollowUpCreateView(LoginRequiredMixin,generic.CreateView):
         followup.lead = lead
         followup.save()
         return super().form_valid(form)
+
+class LeadFollowupUpdateView(LoginRequiredMixin,generic.UpdateView):
+    model = LeadFollowUps
+    template_name = "leads/followup_update.html"
+    form_class = FollowUpCreateModelForm
+    context_object_name = "followup"
+
+    def get_queryset(self):
+        user = self.request.user
+
+        #Initial query set for the entire organisation
+        if user.is_organisor:
+            queryset = LeadFollowUps.objects.filter(lead__organisation=user.userprofile)
+        else:
+            #Getting all the leads associated under the logged in agents organisation
+            queryset = LeadFollowUps.objects.filter(lead__organisation=user.agent.organisation) #Accesing the organisation first--> an agent lies under which organisation
+            # Filtering the leads for the current agent
+            queryset = LeadFollowUps.objects.filter(lead__agent__user=user)
+        return queryset
+
+    def get_success_url(self):
+        return reverse("leads:lead-detail", kwargs={"pk":self.get_object().lead.id})
