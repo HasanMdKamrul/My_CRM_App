@@ -394,3 +394,26 @@ class LeadFollowupUpdateView(LoginRequiredMixin,generic.UpdateView):
 
     def get_success_url(self):
         return reverse("leads:lead-detail", kwargs={"pk":self.get_object().lead.id})
+
+
+class LeadFollowupDeleteView(OrganisorAndLoginRequiredMixin,generic.DeleteView):
+    model = LeadFollowUps
+    template_name = "leads/followup_delete.html"
+
+    def get_success_url(self):
+        followup = LeadFollowUps.objects.get(id=self.kwargs["pk"])
+
+        return reverse("leads:lead-detail", kwargs={"pk":followup.lead.pk})
+
+    def get_queryset(self):
+        user = self.request.user
+
+        #Initial query set for the entire organisation
+        if user.is_organisor:
+            queryset = LeadFollowUps.objects.filter(lead__organisation=user.userprofile)
+        else:
+            #Getting all the leads associated under the logged in agents organisation
+            queryset = LeadFollowUps.objects.filter(lead__organisation=user.agent.organisation) #Accesing the organisation first--> an agent lies under which organisation
+            # Filtering the leads for the current agent
+            queryset = LeadFollowUps.objects.filter(lead__agent__user=user)
+        return queryset
