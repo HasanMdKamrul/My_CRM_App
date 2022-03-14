@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+
+{% block content %}
+
+<button class="flex w-full text-white bg-pink-500 border-0 py-2 px-6 focus:out:bg-piline-none hovernk-600 rounded mb-5"><a href="{% url 'leads:lead_list'%}">Go back to home</a></button>
+<hr>
+<h1 class="heading__create">Are you sure to delete this view?</h1>
+    <form id="form" method="post">
+        {% csrf_token %}
+        {{form.as_p}}
+        <button type="submit" class="flex  text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded mt-3" style="margin-bottom:2rem;">Submit</button>
+    </form>
+{% endblock content %}
