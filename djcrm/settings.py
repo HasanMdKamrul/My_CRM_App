@@ -126,9 +126,26 @@ USE_L10N = True
 USE_TZ = True
 
 
-# Static files (CSS, JavaScript, Images)
+# * Static files (CSS, JavaScript, Images) --> Files that never change 
 # https://docs.djangoproject.com/en/2.2/howto/static-files/
 # * Section for static files
-
+# ? To setup the static files 3 things to configure in settings.py 1.STATIC_URL 2. STATICFILES_DIRS 3.STATIC_ROOT
 STATIC_URL = '/static/'
+
+STATICFILES_DIRS = [
+    BASE_DIR, os.path.join(BASE_DIR, 'static')
+]
+
+STATIC_ROOT = 'static_root'
+
+
+
 AUTH_USER_MODEL = 'leads.User'
+
+# todo console email backends
+
+EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+# ? Login redirect url
+
+LOGIN_REDIRECT_URL = 'leads:lead_list'

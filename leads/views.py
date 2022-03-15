@@ -5,11 +5,27 @@ from django.views import generic
 # todo Inside app imports 
 
 from .models import Lead,Agent
-from .forms import LeadModelForm
+from .forms import LeadModelForm,CustomUserCreationForm
+
+# ? Email modification imports
+
+from django.core.mail import send_mail
+
+# * Authentication Imports 
+
 
 
 
 # ? Create your views here.
+
+# todo SignUpView from UserCreationForm
+
+class SignUpView(generic.CreateView):
+    form_class = CustomUserCreationForm
+    template_name = 'registration/signup.html'
+    
+    def get_success_url(self):
+        return reverse('login')
 
  
 # ** Class Based CURD + L views 
@@ -32,8 +48,22 @@ class LeadCreateView(generic.CreateView):
     template_name ="leads/lead_create.html"
     form_class = LeadModelForm
     
+    def form_valid(self, form):
+        # todo email support
+        
+        send_mail(
+            subject = "A new lead has been created",
+            message = "Go to site to see the new lead", 
+            from_email ="text@gmail.com", 
+            recipient_list= ["test2@gmail.com"]
+        )
+        
+        return super().form_valid(form)
+    
     def get_success_url(self):
         return reverse('leads:lead_list')
+    
+    
 
 # ? Detail View Model
 
