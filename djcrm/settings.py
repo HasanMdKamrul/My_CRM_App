@@ -39,9 +39,14 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     
+    
     # * Installed application by the developer
     
-    'leads'
+    'leads',
+    
+    #* Crispy from app
+    'crispy_forms',
+    "crispy_tailwind",
     
 ]
 
@@ -150,3 +155,8 @@ EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
 LOGIN_REDIRECT_URL = 'leads:lead_list'
 LOGOUT_REDIRECT_URL = 'leads:lead_list'
+
+# todo Crispy from settings --> add crispy_forms to the installed apps
+
+CRISPY_ALLOWED_TEMPLATE_PACKS = "tailwind"
+CRISPY_TEMPLATE_PACK = "tailwind"
