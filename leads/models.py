@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import AbstractUser
 
 
+#* Signals
+from django.db.models.signals import post_save
 
 # ** Custom User Model 
 
@@ -41,5 +43,11 @@ class Agent(models.Model):
         return self.user.email
     
     
+def post_user_created_signal(sender,instance,created,**kwargs):
+    if created:
+        Userprofile.objects.create(user=instance)
+    
+
+post_save.connect(post_user_created_signal,sender=User)
     
    
