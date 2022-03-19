@@ -43,6 +43,7 @@ INSTALLED_APPS = [
     # * Installed application by the developer
     
     'leads',
+    'agents',
     
     #* Crispy from app
     'crispy_forms',
@@ -144,6 +145,7 @@ STATICFILES_DIRS = [
 STATIC_ROOT = 'static_root'
 
 
+# ** Custom user model when inherits from default user model
 
 AUTH_USER_MODEL = 'leads.User'
 
