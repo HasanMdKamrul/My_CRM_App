@@ -11,7 +11,9 @@ from .forms import LeadModelForm,CustomUserCreationForm
 
 from django.core.mail import send_mail
 
-# * Authentication Imports 
+# * Imports for login required 
+
+from django.contrib.auth.mixins import LoginRequiredMixin
 
 
 
@@ -37,14 +39,14 @@ class LandingPageView(generic.TemplateView):
 
 # ListView
 
-class LeadListView(generic.ListView):
+class LeadListView(LoginRequiredMixin,generic.ListView):
     template_name ="/leads/lead_list.html"
     queryset = Lead.objects.all()
     context_object_name = "leads"
     
 # Create View Model
 
-class LeadCreateView(generic.CreateView):
+class LeadCreateView(LoginRequiredMixin,generic.CreateView):
     template_name ="leads/lead_create.html"
     form_class = LeadModelForm
     
@@ -67,7 +69,7 @@ class LeadCreateView(generic.CreateView):
 
 # ? Detail View Model
 
-class LeadDetailView(generic.DetailView):
+class LeadDetailView(LoginRequiredMixin,generic.DetailView):
     template_name ="leads/lead_detail.html"
     context_object_name = "lead_detail"
     queryset = Lead.objects.all()
@@ -75,7 +77,7 @@ class LeadDetailView(generic.DetailView):
 
 # todo Update view model
 
-class LeadUpdateView(generic.UpdateView):
+class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
     template_name ="leads/lead_update.html"
     form_class = LeadModelForm
     queryset = Lead.objects.all()
@@ -86,7 +88,7 @@ class LeadUpdateView(generic.UpdateView):
     
 #! Delete view model
 
-class LeadDeleteView(generic.DeleteView):
+class LeadDeleteView(LoginRequiredMixin,generic.DeleteView):
     template_name ="leads/lead_delete.html"
     queryset = Lead.objects.all()
     

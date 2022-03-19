@@ -8,7 +8,13 @@ from django.contrib.auth.models import AbstractUser
 class User(AbstractUser):
     pass
 
-# Create your models here.
+# ! Organisation main profile which is manage every thing head or boss
+
+class Userprofile(models.Model):
+    user = models.OneToOneField("User",on_delete=models.CASCADE)
+    
+    def __str__(self): 
+        return self.user.username
 
 class Lead(models.Model):
     
