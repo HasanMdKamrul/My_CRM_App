@@ -38,6 +38,7 @@ class Lead(models.Model):
 class Agent(models.Model):
     #* Agent is an user so we inherited the fields associated to the User model in Agent 
     user = models.OneToOneField("User",on_delete=models.CASCADE)
+    organization = models.ForeignKey("Userprofile", on_delete=models.CASCADE,null=True)
     
     def __str__(self):
         return self.user.email
