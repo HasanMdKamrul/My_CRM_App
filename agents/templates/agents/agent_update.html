@@ -21,7 +21,7 @@
                 <button type="submit" class="flex ml-0 text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded" style="margin-bottom:2rem;">Submit</button>
             </form>
           <div class="flex">
-           <button class="flex ml-0 text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"><a href="#">Delete</a></button>
+           <button class="flex ml-0 text-white bg-pink-500 border-0 py-2 px-6 focus:outline-none hover:bg-pink-600 rounded"><a href="{% url 'agents:agent_delete' agent.pk%}">Delete</a></button>
           </div>
         </div>
         <img alt="ecommerce" class="lg:w-1/2 w-full lg:h-auto h-64 object-cover object-center rounded" src="https://dummyimage.com/400x400">
