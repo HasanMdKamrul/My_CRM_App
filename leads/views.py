@@ -15,6 +15,8 @@ from django.core.mail import send_mail
 
 from django.contrib.auth.mixins import LoginRequiredMixin
 
+from agents.mixins import OrganizerAndLoginRequiredMixin
+
 
 
 
@@ -46,7 +48,7 @@ class LeadListView(LoginRequiredMixin,generic.ListView):
     
 # Create View Model
 
-class LeadCreateView(LoginRequiredMixin,generic.CreateView):
+class LeadCreateView(OrganizerAndLoginRequiredMixin,generic.CreateView):
     template_name ="leads/lead_create.html"
     form_class = LeadModelForm
     
@@ -77,7 +79,7 @@ class LeadDetailView(LoginRequiredMixin,generic.DetailView):
 
 # todo Update view model
 
-class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
+class LeadUpdateView(OrganizerAndLoginRequiredMixin,generic.UpdateView):
     template_name ="leads/lead_update.html"
     form_class = LeadModelForm
     queryset = Lead.objects.all()
@@ -88,7 +90,7 @@ class LeadUpdateView(LoginRequiredMixin,generic.UpdateView):
     
 #! Delete view model
 
-class LeadDeleteView(LoginRequiredMixin,generic.DeleteView):
+class LeadDeleteView(OrganizerAndLoginRequiredMixin,generic.DeleteView):
     template_name ="leads/lead_delete.html"
     queryset = Lead.objects.all()
     

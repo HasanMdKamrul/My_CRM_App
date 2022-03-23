@@ -1,32 +1,34 @@
 
 from django.shortcuts import render,reverse
 
-# Django generic views
+# *Django generic views
 from django.views import generic
 
-# mixins 
+# *mixins 
 
-from django.contrib.auth.mixins import LoginRequiredMixin
+# from django.contrib.auth.mixins import LoginRequiredMixin
 
-# Models import
+from .mixins import OrganizerAndLoginRequiredMixin
+
+# *Models import
 from leads.models import Agent
 
-# Forms import
+# *Forms import
 from .forms import AgentModelForm
 
-# Create your views here.
+# *Create your views here.
 
 
-class Agentlistview(LoginRequiredMixin,generic.ListView):
+class Agentlistview(OrganizerAndLoginRequiredMixin,generic.ListView):
     template_name = 'agents/agent_list.html'
     context_object_name = 'agents'
     
     
     def get_queryset(self):
-        return Agent.objects.all()
+        return Agent.objects.filter(organization=self.request.user.userprofile)
     
 
-class Agentcreateview(LoginRequiredMixin,generic.CreateView):
+class Agentcreateview(OrganizerAndLoginRequiredMixin,generic.CreateView):
     template_name = 'agents/agent_create.html'
     context_object_name = 'agents'
     form_class = AgentModelForm
@@ -42,16 +44,17 @@ class Agentcreateview(LoginRequiredMixin,generic.CreateView):
     
     
     
-class Agentdetailview(LoginRequiredMixin,generic.DetailView):
+class Agentdetailview(OrganizerAndLoginRequiredMixin,generic.DetailView):
     template_name = 'agents/agent_detail.html'
     context_object_name = 'agent_detail'
     
     def get_queryset(self):
-        return Agent.objects.all()
+         return Agent.objects.filter(organization=self.request.user.userprofile)
+    
 
 
 
-class Agentupdateview(LoginRequiredMixin,generic.UpdateView):
+class Agentupdateview(OrganizerAndLoginRequiredMixin,generic.UpdateView):
     template_name = 'agents/agent_update.html'
     context_object_name = 'agent'
     form_class = AgentModelForm
@@ -60,15 +63,16 @@ class Agentupdateview(LoginRequiredMixin,generic.UpdateView):
         return reverse('agents:agent_list')
     
     def get_queryset(self):
-        return Agent.objects.all()
+        return Agent.objects.filter(organization=self.request.user.userprofile)
+    
     
 
-class Agentdeleteview(LoginRequiredMixin,generic.DeleteView):
+class Agentdeleteview(OrganizerAndLoginRequiredMixin,generic.DeleteView):
     template_name = 'agents/agent_delete.html'
     context_object_name = 'agent'
     
     def get_queryset(self):
-        return Agent.objects.all()
+        return Agent.objects.filter(organization=self.request.user.userprofile)
     
     def get_success_url(self):
         return reverse('agents:agent_list')

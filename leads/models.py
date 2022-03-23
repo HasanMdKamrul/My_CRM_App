@@ -8,9 +8,10 @@ from django.db.models.signals import post_save
 # ** Custom User Model 
 
 class User(AbstractUser):
-    pass
+    is_organizer = models.BooleanField(default=True)
+    is_agent = models.BooleanField(default=False)
 
-# ! Organisation main profile which is manage every thing head or boss
+# * Organisation main profile which is manage every thing head or boss
 
 class Userprofile(models.Model):
     user = models.OneToOneField("User",on_delete=models.CASCADE)
