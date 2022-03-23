@@ -1,4 +1,4 @@
-
+import random
 from django.shortcuts import render,reverse
 
 # *Django generic views
@@ -15,6 +15,10 @@ from leads.models import Agent
 
 # *Forms import
 from .forms import AgentModelForm
+
+#* Send_mail
+
+from django.core.mail import send_mail
 
 # *Create your views here.
 
@@ -37,9 +41,24 @@ class Agentcreateview(OrganizerAndLoginRequiredMixin,generic.CreateView):
         return reverse('agents:agent_list')
     
     def form_valid(self,form): 
-        agent = form.save(commit=False)
-        agent.organization = self.request.user.userprofile
-        agent.save()
+        user = form.save(commit=False)
+        user.is_agent = True
+        user.is_organizer = False
+        user.set_password(f"{random.randint(0,1000)}")
+        user.save()
+        
+        Agent.objects.create(
+            user=user,
+            organization = self.request.user.userprofile
+            )
+        
+        send_mail(
+            subject = "You are invited as an agent", 
+            message= "Join the crm and start working",
+            from_email="test@gmail.com",
+            recipient_list=[user.email],
+        )
+        
         return super(Agentcreateview, self).form_valid(form)
     
     
