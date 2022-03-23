@@ -44,8 +44,18 @@ class LandingPageView(generic.TemplateView):
 class LeadListView(LoginRequiredMixin,generic.ListView):
     template_name ="/leads/lead_list.html"
     queryset = Lead.objects.all()
-    context_object_name = "leads"
+    context_object_name = "leads" 
     
+    def get_queryset(self):
+        
+        if self.request.user.is_organizer:
+            queryset = Lead.objects.filter(organization=self.request.user.userprofile)
+        else: 
+            queryset = Lead.objects.filter(organization= self.request.user.userprofile)
+            queryset = Lead.objects.filter(agent__user = self.request.user)
+        
+        return queryset
+
 # Create View Model
 
 class LeadCreateView(OrganizerAndLoginRequiredMixin,generic.CreateView):
@@ -74,7 +84,15 @@ class LeadCreateView(OrganizerAndLoginRequiredMixin,generic.CreateView):
 class LeadDetailView(LoginRequiredMixin,generic.DetailView):
     template_name ="leads/lead_detail.html"
     context_object_name = "lead_detail"
-    queryset = Lead.objects.all()
+    def get_queryset(self):
+        
+        if self.request.user.is_organizer:
+            queryset = Lead.objects.filter(organization=self.request.user.userprofile)
+        else: 
+            queryset = Lead.objects.filter(organization= self.request.user.userprofile)
+            queryset = Lead.objects.filter(agent__user = self.request.user)
+        
+        return queryset
 
 
 # todo Update view model
@@ -82,7 +100,12 @@ class LeadDetailView(LoginRequiredMixin,generic.DetailView):
 class LeadUpdateView(OrganizerAndLoginRequiredMixin,generic.UpdateView):
     template_name ="leads/lead_update.html"
     form_class = LeadModelForm
-    queryset = Lead.objects.all()
+    def get_queryset(self):
+        
+        if self.request.user.is_organizer:
+            queryset = Lead.objects.filter(organization=self.request.user.userprofile)
+        
+        return queryset
     context_object_name = "lead"
     
     def get_success_url(self):
@@ -92,7 +115,12 @@ class LeadUpdateView(OrganizerAndLoginRequiredMixin,generic.UpdateView):
 
 class LeadDeleteView(OrganizerAndLoginRequiredMixin,generic.DeleteView):
     template_name ="leads/lead_delete.html"
-    queryset = Lead.objects.all()
+    def get_queryset(self):
+        
+        if self.request.user.is_organizer:
+            queryset = Lead.objects.filter(organization=self.request.user.userprofile)
+        
+        return queryset
     
     def get_success_url(self):
         return reverse("leads:lead_list")

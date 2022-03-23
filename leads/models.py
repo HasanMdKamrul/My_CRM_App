@@ -28,7 +28,8 @@ class Lead(models.Model):
     age = models.IntegerField(default=0)
     # * Blank true means no string(Not mandatory field for db), null True means no values will be stored in db.
     # ? Fields are related to other db tables
-    agent = models.ForeignKey("Agent", on_delete=models.CASCADE)
+    agent = models.ForeignKey("Agent", null=True,blank=True ,on_delete=models.SET_NULL)
+    organization = models.ForeignKey("Userprofile", on_delete=models.CASCADE,null=True)
     
     # * String representation of lead model/table
     
