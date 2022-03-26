@@ -43,28 +43,42 @@ class LandingPageView(generic.TemplateView):
 
 class LeadListView(LoginRequiredMixin,generic.ListView):
     template_name ="/leads/lead_list.html"
-    queryset = Lead.objects.all()
-    context_object_name = "leads" 
+    context_object_name = "lead" 
     
     def get_queryset(self):
         
         if self.request.user.is_organizer:
-            queryset = Lead.objects.filter(organization=self.request.user.userprofile)
+            queryset = Lead.objects.filter(organization=self.request.user.userprofile,agent__isnull=False)
         else: 
             queryset = Lead.objects.filter(organization= self.request.user.userprofile)
             queryset = Lead.objects.filter(agent__user = self.request.user)
         
         return queryset
+     
+    def get_context_data(self, **kwargs):
+        context = super(LeadListView, self).get_context_data(**kwargs)
+        if self.request.user.is_organizer:
+            un_assigned_leads = Lead.objects.filter(organization=self.request.user.userprofile,agent__isnull=True)
+            
+            context.update({
+                'un_assigned_leads':un_assigned_leads
+            })
+        
+        return context
+    
 
 # Create View Model
 
 class LeadCreateView(OrganizerAndLoginRequiredMixin,generic.CreateView):
     template_name ="leads/lead_create.html"
     form_class = LeadModelForm
+    context_object_name = "lead"
     
     def form_valid(self, form):
         # todo email support
-        
+        lead = form.save(commit=False)
+        lead.organisation = self.request.user.userprofile
+        lead.save()
         send_mail(
             subject = "A new lead has been created",
             message = "Go to site to see the new lead", 
@@ -72,7 +86,8 @@ class LeadCreateView(OrganizerAndLoginRequiredMixin,generic.CreateView):
             recipient_list= ["test2@gmail.com"]
         )
         
-        return super().form_valid(form)
+        
+        return super(LeadCreateView,self).form_valid(form)
     
     def get_success_url(self):
         return reverse('leads:lead_list')
