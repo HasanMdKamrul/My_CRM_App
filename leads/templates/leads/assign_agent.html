@@ -1,0 +1,19 @@
+
+{% extends "base.html" %}
+
+{% load tailwind_filters %}
+
+{% block content %}
+
+<body style="background-color:#111827">
+<button class="flex w-full text-white bg-pink-500 border-0 py-2 px-6 focus:out:bg-piline-none hovernk-600 rounded mb-5"><a href="{% url 'leads:lead_list'%}">Go back to home</a></button>
+<hr>
+    <hr>
+    <h1 style="text-align:center; text-transform:uppercase; color:white;"Assign your agent</h1>
+    <form id="form" method="post">
+        {% csrf_token %}
+        {{form|crispy}}
+        <button  class="flex mt-3 text-white bg-pink-500 border-0 py-2 px-6 focus:out:bg-piline-none hovernk-600 rounded mb-5" type="submit">Submit</button>
+    </form> 
+    </body>
+{% endblock content %}
